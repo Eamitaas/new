@@ -1,0 +1,775 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<odoo>
+
+
+
+<template id="quotations_half_report_id">
+
+<t t-foreach="docs" t-as="o">
+
+<t t-call="web.basic_layout">
+
+
+
+<div class="header">
+
+<style>
+
+@font-face
+
+{
+
+font-family: Sarabun-Regular;
+
+src: local('United'), url("/itaas_print_sale_report/static/Sarabun-Regular.ttf") format('opentype');
+
+}
+
+.font_fam{
+
+font-family: Sarabun-Regular;
+
+src: local('United'), url("/itaas_print_sale_report/static/Sarabun-Regular.ttf") format('opentype');
+
+}
+
+.font_size_32{
+
+font-size: 32px;
+
+}
+
+.font_size_28{
+
+font-size: 28px;
+
+}
+
+.font_size_22{
+
+font-size: 22px;
+
+}
+
+.font_size_20{
+
+font-size: 20px;
+
+}
+
+.font_size_18{
+
+font-size: 18px;
+
+}
+
+.font_size_16{
+
+font-size: 16px;
+
+}
+
+.font_size_14{
+
+font-size: 14px;
+
+}
+
+</style>
+
+
+
+<table width="100%" class="font_fam font_size_14">
+
+<tr>
+
+<td rowspan="7" width="50%">
+
+<div class="word_wrap" style="max-width:500px;line-height:25px">
+
+<span t-field="o.partner_id.name"/>
+
+<t t-if="o.partner_id.branch_no == '00000'">
+
+<span>( สำนักงานใหญ่ )</span>
+
+</t>
+
+<t t-if="o.partner_id.branch_no and o.partner_id.branch_no != '00000'">
+
+(<span>สาขาที่<span t-field="o.partner_id.branch_no"/>)</span>
+
+</t>
+
+<br/>
+
+<t t-set="partner_address" t-value="o.partner_id.get_partner_full_address()"/>
+
+<span t-esc="' '.join([ address for address in partner_address ])"/>
+
+<br/>
+
+<span t-esc="o.partner_id.vat"/>
+
+<br/>
+
+<span t-field="o.contact_id.name"/>
+
+</div>
+
+</td>
+
+<td colspan="2" width="40%">
+
+<div class="row">
+
+<div class="col-7 font_size_16">
+
+<span t-if="o.state == 'draft'">QUOTATION#</span>
+
+<span t-if="o.state != 'draft'">ORDER#</span>
+
+<span t-field="o.name"/>
+
+</div>
+
+<div class="col-2" style="text-align:right;">
+
+<span>หน้า</span>
+
+<span class="page"/>/<span class="topage"/><br/>
+
+</div>
+
+</div>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td width="18%">
+
+<B><span>วันที่</span></B>
+
+</td>
+
+<td width="22%">
+
+<span t-field="o.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<B><span>พนักงานขาย</span></B>
+
+</td>
+
+<td>
+
+<span t-field="o.user_id"/>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<B><span>เงื่อนไขการชำระเงิน</span></B>
+
+</td>
+
+<td>
+
+<span t-field="o.payment_term_id"/>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<B><span>กำหนดยืนราคาถึง</span></B>
+
+</td>
+
+<td>
+
+<span t-field="o.validity_date" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+
+</td>
+
+</tr>
+
+<tr t-if="o.state != 'draft'">
+
+<td>
+
+<B><span>กำหนดส่งของ/จัดส่งโดย</span></B>
+
+</td>
+
+<td>
+
+<span t-field="o.commitment_date" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+
+<span t-field="o.carrier_id"/>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<B><span>เลขที่อ้างอิง</span></B>
+
+</td>
+
+<td>
+
+<span t-esc="o.client_order_ref"/>
+
+</td>
+
+</tr>
+
+</table>
+
+
+
+</div>
+
+
+
+<div class="page">
+
+<style>
+
+@font-face
+
+{
+
+font-family: Sarabun-Regular;
+
+src: local('United'), url("/itaas_print_sale_report/static/Sarabun-Regular.ttf") format('opentype');
+
+}
+
+.font_fam{
+
+font-family: Sarabun-Regular;
+
+src: local('United'), url("/itaas_print_sale_report/static/Sarabun-Regular.ttf") format('opentype');
+
+}
+
+.font_size_32{
+
+font-size: 32px;
+
+}
+
+.font_size_28{
+
+font-size: 28px;
+
+}
+
+.font_size_22{
+
+font-size: 22px;
+
+}
+
+.font_size_20{
+
+font-size: 20px;
+
+}
+
+.font_size_18{
+
+font-size: 18px;
+
+}
+
+.font_size_16{
+
+font-size: 16px;
+
+}
+
+.font_size_14{
+
+font-size: 14px;
+
+}
+
+
+
+table.table-nobordered{
+
+margin:0px;
+
+width: 100%;
+
+}
+
+table.table-nobordered &gt; thead &gt; tr &gt; th{
+
+border:1px solid white;
+
+padding:0px;
+
+}
+
+table.table-nobordered &gt; thead &gt; tr &gt; td{
+
+border:1px solid white;
+
+padding:0px;
+
+}
+
+table.table-nobordered &gt; tbody &gt; tr &gt; td{
+
+border:1px solid white;
+
+padding:0px;
+
+}
+
+table.table-nobordered &gt; tfoot &gt; tr &gt; td{
+
+border:1px solid white;
+
+padding:0px;
+
+}
+
+.word_wrap{
+
+word-wrap: break-word;
+
+<!--background-color:#cccccc;-->
+
+}
+
+</style>
+
+
+
+<t t-set="num" t-value="0"/>
+
+<!--<table width="100%" class="table table-nobordered font_fam font_size_14">-->
+
+<table width="100%" class="font_fam" style="border:1px solid white;font-size: 14px;">
+
+<thead>
+
+<tr style="color:white;">
+
+<th width="5%"><span>-</span></th>
+
+<th width="30%"><span>-</span></th>
+
+<th width="8%"><span>-</span></th>
+
+<th width="10%"><span>-</span></th>
+
+<th width="10%"><span>-</span></th>
+
+<th width="15%"><span>-</span></th>
+
+<th width="8%"><span>-</span></th>
+
+<th width="10%"><span>-</span></th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<t t-foreach="o.order_line" t-as="line">
+
+<tr style="height:20px;">
+
+<td align="center">
+
+<t t-if="line.product_id">
+
+<t t-set="num" t-value="num+1"/>
+
+<span t-esc="num"/>
+
+</t>
+
+</td>
+
+<td>
+
+<span t-field="line.name"/>
+
+</td>
+
+<td align="center">
+
+<t t-if="line.product_id">
+
+<span t-esc="'{0:,.0f}'.format(float(line.product_uom_qty))"/>
+
+</t>
+
+</td>
+
+<td align="center">
+
+<t t-if="line.product_id">
+
+<span t-esc="line.product_uom.get_standard_uom_name()"/>
+
+</t>
+
+</td>
+
+<td align="right">
+
+<t t-if="line.product_id">
+
+<span t-esc="'{0:,.2f}'.format(float(line.price_unit))"/>
+
+</t>
+
+</td>
+
+<td align="center">
+
+<t t-if="line.product_id ">
+
+<t t-if="line.discount">
+
+<t t-set="discount_text" t-value="str(line.discount).split('.')"/>
+
+<t t-if="int(discount_text[1]) &gt; 0">
+
+<span t-esc="line.discount"/>%
+
+</t>
+
+<t t-else="">
+
+<span t-esc="int(line.discount)"/>%
+
+</t>
+
+</t>
+
+<t t-if="line.discount_fixed">
+
+<span t-esc="'{0:,.2f}'.format(abs(float(line.discount_fixed)))"/>
+
+</t>
+
+<t t-if="line.discount_ontop">
+
+<t t-set="discount_ontop_list" t-value="line.get_discount_ontop()"/>
+
+<t t-foreach="discount_ontop_list" t-as="discount_ontop">
+
+<t t-set="discount_ontop_text" t-value="str(discount_ontop).split('.')"/>
+
+<t t-if="int(discount_ontop_text[1]) &gt; 0">
+
+<span t-esc="discount_ontop"/>%
+
+</t>
+
+<t t-else="">
+
+<span t-esc="int(discount_ontop)"/>%
+
+</t>
+
+</t>
+
+</t>
+
+</t>
+
+</td>
+
+<td align="right">
+
+<t t-if="line.product_id">
+
+<span t-esc="'{0:,.2f}'.format(abs(float(line.price_subtotal)))" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+
+</t>
+
+</td>
+
+<td>
+
+
+
+</td>
+
+<td>
+
+
+
+</td>
+
+</tr>
+
+</t>
+
+</tbody>
+
+</table>
+
+
+
+</div>
+
+
+
+<div class="footer">
+
+<style>
+
+@font-face
+
+{
+
+font-family: Sarabun-Regular;
+
+src: local('United'), url("/itaas_print_sale_report/static/Sarabun-Regular.ttf") format('opentype');
+
+}
+
+.font_fam{
+
+font-family: Sarabun-Regular;
+
+src: local('United'), url("/itaas_print_sale_report/static/Sarabun-Regular.ttf") format('opentype');
+
+}
+
+.font_size_32{
+
+font-size: 32px;
+
+}
+
+.font_size_28{
+
+font-size: 28px;
+
+}
+
+.font_size_22{
+
+font-size: 22px;
+
+}
+
+.font_size_20{
+
+font-size: 20px;
+
+}
+
+.font_size_18{
+
+font-size: 18px;
+
+}
+
+.font_size_16{
+
+font-size: 16px;
+
+}
+
+.font_size_14{
+
+font-size: 14px;
+
+}
+
+table.table-nobordered{
+
+margin:0px;
+
+width: 100%;
+
+}
+
+table.table-nobordered &gt; thead &gt; tr &gt; th{
+
+border:1px solid white;
+
+padding:0px;
+
+}
+
+table.table-nobordered &gt; thead &gt; tr &gt; td{
+
+border:1px solid white;
+
+padding:0px;
+
+}
+
+table.table-nobordered &gt; tbody &gt; tr &gt; td{
+
+border:1px solid white;
+
+padding:0px;
+
+}
+
+table.table-nobordered &gt; tfoot &gt; tr &gt; td{
+
+border:1px solid white;
+
+padding:0px;
+
+}
+
+</style>
+
+<div class="last-page">
+
+<table width="100%" class="font_fam" style="border:1px solid white;font-size: 14px;">
+
+<tr>
+
+<td rowspan="6" width="46%">
+
+<!--<table width="100%" class="table table-nobordered">-->
+
+
+
+<!-- <tr>-->
+
+<!-- <td colspan="1">-->
+
+<strong>หมายเหตุ</strong><br/>
+
+<span t-field="o.note"/>
+
+<!-- </td>-->
+
+<!-- </tr>-->
+
+<!--</table>-->
+
+</td>
+
+<td align="right" width="44%">
+
+<span t-esc="'{0:,.2f}'.format(float(o.amount_untaxed))"/>
+
+</td>
+
+<td width="12%"/>
+
+</tr>
+
+
+
+<tr>
+
+<td align="right">
+
+<span t-esc="'{0:,.2f}'.format(float(o.amount_tax))"/>
+
+</td>
+
+<td/>
+
+</tr>
+
+<tr>
+
+<td align="right">
+
+<span t-esc="'{0:,.2f}'.format(float(o.amount_total))"/>
+
+</td>
+
+<td/>
+
+</tr>
+
+<tr>
+
+<td/>
+
+<td/>
+
+</tr>
+
+<tr>
+
+<td/>
+
+<td/>
+
+</tr>
+
+<tr>
+
+<td align="center">
+
+<div class="font_fam word_wrap last-page" style="font-size:14px;">
+
+<br/>
+
+<span>_________________________________</span>
+
+<br/>&amp;nbsp;&amp;nbsp;&amp;nbsp;
+
+<span>ผู้ทำรายการ</span>
+
+</div>
+
+</td>
+
+</tr>
+
+</table>
+
+
+
+</div>
+
+
+
+</div>
+
+</t>
+
+</t>
+
+</template>
+
+</odoo>
